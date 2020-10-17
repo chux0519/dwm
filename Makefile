@@ -6,7 +6,7 @@ include config.mk
 SRC = drw.c dwm.c util.c
 OBJ = ${SRC:.c=.o}
 
-all: options dwm
+all: options dwm dwm-status
 
 options:
 	@echo dwm build options:
@@ -25,6 +25,9 @@ config.h:
 dwm: ${OBJ}
 	${CC} -o $@ ${OBJ} ${LDFLAGS}
 
+dwm-status:
+	${CC} -o $@ dwm_status.c ${CFLAGS} ${LDFLAGS}
+
 clean:
 	rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
 
@@ -38,6 +41,8 @@ dist: clean
 
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
+	cp -f dwm-status ${DESTDIR}${PREFIX}/bin
+	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm-status
 	cp -f dwm ${DESTDIR}${PREFIX}/bin
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1

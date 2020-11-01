@@ -429,11 +429,28 @@ void buttonpress(XEvent *e) {
   }
   if (ev->window == selmon->barwin) {
     i = x = 0;
+    // FIXME
     do
       x += TEXTW(tags[i]);
     while (ev->x >= x && ++i < LENGTH(tags));
     if (i < LENGTH(tags)) {
       click = ClkTagBar;
+      // update i
+      unsigned int occ = 0;
+      for (c = selmon->clients; c; c = c->next) {
+        occ |= c->tags;
+      }
+      int number = i;
+      for (int inner_i = 0; inner_i < LENGTH(tags); inner_i++) {
+        int has_content = (occ & 1 << inner_i);
+        if (has_content) {
+          number--;
+        }
+        if (number <= 0) {
+          i = inner_i;
+          break;
+        }
+      }
       arg.ui = 1 << i;
     } else if (ev->x < x + blw)
       click = ClkLtSymbol;
